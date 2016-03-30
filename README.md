@@ -24,3 +24,4 @@ References:
 - HOT specs: http://docs.openstack.org/developer/heat/template_guide/hot_spec.html
 - Repositories of Heat templates: https://github.com/openstack/heat-templates/
 - DSL to be used with Heat: https://wiki.openstack.org/wiki/Heat/DSL
+
