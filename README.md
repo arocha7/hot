@@ -6,7 +6,7 @@ Eg. #1. deploy a simple stack to create a VM and attach to an existing Volume.
 
 NOTE: to create a new Volume, use Horizon dashboard or use CLI:
 * $ nova help volume-attach
-* $ nova volume-attach <server> <volume> <device>
+* $ nova volume-attach 'server' 'volume' 'device'
 
 Eg. #2. deploy a simple stack to create a VM and a Volume to attach
 
