@@ -1,0 +1,90 @@
+heat_template_version: 2015-04-30
+
+description: template to deploy a 3 compute instance for vSA 
+
+parameters:
+
+  key_name:
+    type: string
+    label: Key Name
+    description: Name of key-pair to be used for compute instance
+    default: son-ift-ptin
+
+  image_id:
+    type: string
+    label: Image ID
+    description: Image to be used for compute instance
+    constraints:
+      - allowed_values: [ centos7-cldimg, trusty-cldimg, xenial-cldimg ]
+    default: xenial-cldimg
+
+  flavor:
+    type: string
+    label: Instance Type
+    description: Type of instance (flavor) to be used
+    constraints:
+      - allowed_values: [ m1.small, m1.medium, m1.large, m1.xlarge ]
+    default: m1.small
+
+resources:
+
+  fe_fip:
+    type: OS::Nova::FloatingIP
+    properties:
+      pool: admin_floating_net
+
+  fe_fip_attrib:
+    type:
+        OS::Nova::FloatingIPAssociation
+    properties:
+      floating_ip: { get_resource: fe_fip }
+      server_id: { get_resource: fe01fw-haprx }
+
+  DB_Vol_Snort:
+    type: OS::Cinder::Volume
+    properties:
+      size: 22
+
+  DB_Vol_Squid:
+    type: OS::Cinder::Volume
+    properties:
+      size: 23
+
+  fe01fw-haprx:
+    type: OS::Nova::Server
+    properties:
+      key_name: { get_param: key_name }
+      image: { get_param: image_id }
+      flavor: { get_param: flavor }
+
+  be02ddos-mitigate:
+    type: OS::Nova::Server
+    properties:
+      key_name: { get_param: key_name }
+      image: { get_param: image_id }
+      flavor: { get_param: flavor }
+
+  be03parental-ctrl:
+    type: OS::Nova::Server
+    properties:
+      key_name: { get_param: key_name }
+      image: { get_param: image_id }
+      flavor: { get_param: flavor }
+
+  DB_VolSnort_att:
+    type: OS::Cinder::VolumeAttachment
+    properties:
+      instance_uuid: { get_resource: be02ddos-mitigate }
+      volume_id: { get_resource: DB_Vol_Snort }
+
+  DB_VolSquid_att:
+    type: OS::Cinder::VolumeAttachment
+    properties:
+      instance_uuid: { get_resource: be03parental-ctrl }
+      volume_id: { get_resource: DB_Vol_Squid }
+
+outputs:
+
+  instance_ip:
+    description: The IP address of the deployed instance
+    value: { get_attr: [fe01fw-haprx, first_address] }

@@ -8,33 +8,33 @@ parameters:
     label: Key Name
     description: Name of key-pair to be used for compute instance \
       execute "$ nova keypair-list" to get a list if available keys
-    default: son-key
+    default: son-ift-ptin
 
   image_id:
     type: string
     label: Image ID
     description: Image to be used for compute instance
-    default: cirros
+    default: centos7-cldimg
     constraints:
-      - allowed_values: [ centos6, centos7, trusty, cirros ]
+      - allowed_values: [ centos7-cldimg, trusty-cldimg, xenial-cldimg ]
         description: execute "$ glance image-list" to get a list if available images 
 
   flavor_id:
     type: string
     label: Instance Type
     description: Type of instance (flavor) to be used
-    default: fl.default
+    default: m1.small
     constraints:
-      - allowed_values: [ fl.default, fl.large, fl.xlarge, fl.huge ]
+      - allowed_values: [ m1.tiny, m1.small, m1.medium, m1.large, m1.xlarge ]
         description: execute "$ nova flavor-list" to get a list if available flavors
 
   network_id:
     type: string
     label: Network ID
     description: 
-    default: net-ptin
+    default: qual-netw
     constraints:
-      - allowed_values: [ net-ptin, net04-ext ]
+      - allowed_values: [ qual-netw, admin_floating_net ]
         description: execute "$ neutron net-list" to get a list if available network segments
 
 resources:

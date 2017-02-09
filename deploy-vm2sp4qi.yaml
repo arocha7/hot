@@ -12,7 +12,7 @@ parameters:
     type: string
     label: Image ID
     description: image to be used for the compute instance
-    default: trusty-cldimg
+    default: centos7-cldimg
   instance_type:
     type: string
     label: Instance Type
@@ -27,7 +27,7 @@ resources:
     type: OS::Nova::Server
     properties:
       networks:
-        - network: son-qual-netw
+        - network: qual-netw
       key_name: { get_param: key_name }
       image: { get_param: image_id }
       flavor: { get_param: instance_type }
@@ -36,7 +36,7 @@ resources:
     type: OS::Nova::Server
     properties:
       networks:
-        - network: son-qual-netw
+        - network: qual-netw
       key_name: { get_param: key_name }
       image: { get_param: image_id }
       flavor: { get_param: instance_type }
