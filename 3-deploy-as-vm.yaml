@@ -37,6 +37,15 @@ parameters:
       - allowed_values: [ qual-netw, admin_floating_net ]
         description: execute "$ neutron net-list" to get a list if available network segments
 
+  sec_grp:
+    type: string
+    label: Security Group
+    description: SSH, HTTP, HTTPS, 8080, 3821
+    constraints:
+      - allowed_values: [ qual-secgrp, jk, squid, ssh, www ]
+    default: qual-secgrp
+
+
 resources:
 
   asg:
@@ -49,8 +58,11 @@ resources:
           image: { get_param: image_id }
           flavor: { get_param: flavor_id }
           networks: [{network: {get_param: network_id} }]
-          security_groups: [default]
+          security_groups:
+            - { get_param: sec_grp }
           metadata: {"metering.stack": {get_param: "OS::stack_id"}}
+          user_data: ~/son-install/utils/ansible-install-Core.sh
+          user_data_format: RAW
       min_size: 1
       desired_capacity: 1
       max_size: 5
@@ -96,6 +108,7 @@ resources:
       alarm_actions: [{get_attr: [scale_dw_policy, alarm_url]}]
       matching_metadata: {'metadata.user_metadata.stack': {get_param: "OS::stack_id"}}
       comparison_operator: lt
+
 
 outputs:
   instance_ip:
